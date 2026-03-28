@@ -65,6 +65,7 @@ jobs:
       checks: write
     with:
       checkout_ref: develop
+      artifact_prefix: 'develop-'
       save_gradle_cache: false
 
   build-and-push:
