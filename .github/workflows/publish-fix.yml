@@ -102,3 +102,12 @@ jobs:
           cache-to: |
             type=gha,scope=image-shared,mode=max
             type=registry,ref=ghcr.io/graypawn/grimmory:buildcache,mode=max
+
+  trigger-develop:
+    name: Trigger Develop Integration
+    needs: [build-and-push]
+    uses: ./.github/workflows/publish-develop.yml
+    permissions:
+      contents: write
+      packages: write
+      checks: write

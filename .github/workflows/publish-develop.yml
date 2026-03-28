@@ -1,0 +1,128 @@
+name: Develop Branch - Integrate and Publish
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  integrate:
+    name: Integrate Fix Branches into Develop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Reset develop to upstream and merge all fix branches
+        run: |
+          # Fetch upstream
+          git fetch origin
+
+          UPSTREAM_REF="origin/main"
+          if git rev-parse --verify "refs/remotes/upstream/main" >/dev/null 2>&1; then
+            git fetch upstream
+            UPSTREAM_REF="upstream/main"
+          fi
+          echo "Using base ref: $UPSTREAM_REF"
+
+          # Reset develop to upstream
+          git checkout -B develop "$UPSTREAM_REF"
+
+          # Collect fix branches
+          fix_branches=$(git branch -r --list 'origin/fix/*' | sed 's|^ *||' | sort)
+
+          if [ -z "$fix_branches" ]; then
+            echo "::warning::No fix/ branches found. Develop will match upstream."
+          else
+            echo "Fix branches to merge:"
+            echo "$fix_branches"
+            echo "---"
+
+            for branch in $fix_branches; do
+              branch_name=$(echo "$branch" | sed 's|origin/||')
+              echo "Merging $branch_name ..."
+              git merge "$branch" --no-edit -m "Merge $branch_name into develop"
+              echo "✅ $branch_name merged successfully"
+            done
+          fi
+
+      - name: Push develop branch
+        run: git push origin develop --force
+
+  test-suite:
+    name: Test Suite
+    needs: [integrate]
+    uses: ./.github/workflows/test-suite.yml
+    permissions:
+      contents: read
+      checks: write
+    with:
+      checkout_ref: develop
+      save_gradle_cache: false
+
+  build-and-push:
+    name: Build and Push Develop Image
+    needs: [test-suite]
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 1
+          ref: develop
+
+      - name: Generate Develop Tag
+        run: |
+          short_sha=$(git rev-parse --short HEAD)
+          build_date=$(date -u +%Y%m%d)
+          dev_tag="develop-${build_date}-${short_sha}"
+          echo "dev_tag=$dev_tag" >> "$GITHUB_ENV"
+          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "Develop tag: $dev_tag"
+
+      - name: Set Up QEMU for Multi-Arch Builds
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
+        with:
+          cache-image: false
+
+      - name: Set Up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Authenticate to GitHub Container Registry
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/graypawn/grimmory:${{ env.dev_tag }}
+            ghcr.io/graypawn/grimmory:develop
+          build-args: |
+            APP_VERSION=${{ env.dev_tag }}
+            APP_REVISION=${{ env.commit_sha }}
+          cache-from: |
+            type=gha,scope=image-shared
+            type=registry,ref=ghcr.io/graypawn/grimmory:buildcache
+          cache-to: |
+            type=gha,scope=image-shared,mode=max
+            type=registry,ref=ghcr.io/graypawn/grimmory:buildcache,mode=max
