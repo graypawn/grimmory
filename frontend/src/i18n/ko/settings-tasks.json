@@ -1,0 +1,69 @@
+{
+  "title": "시스템 작업 관리자",
+  "description": "라이브러리 유지 관리, 메타데이터 새로 고침, 캐시 정리를 위한 자동화된 시스템 작업을 관리하세요. <a href=\"https://spring.io/blog/2020/11/10/new-in-spring-5-3-improved-cron-expressions\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"cron-link\">Spring cron 표현식</a>을 사용하여 반복 작업을 예약하세요.",
+  "systemTasks": {
+    "sectionTitle": "시스템 작업",
+    "sectionDesc": "작업을 수동으로 실행하고, 실시간으로 진행 상황을 모니터링하고, 예약된 자동화를 구성하세요."
+  },
+  "loading": "작업 로딩 중...",
+  "emptyTitle": "사용 가능한 작업 없음",
+  "status": {
+    "running": "실행 중",
+    "stale": "중단됨",
+    "neverRun": "실행된 적 없음",
+    "justNow": "방금"
+  },
+  "cron": {
+    "noSchedule": "예약 없음",
+    "edit": "편집",
+    "placeholder": "예: 0 2 * * *",
+    "validationPrefix": "Cron 표현식은 정확히 6개의 필드(초, 분, 시, 일, 월, 요일)를 가져야 합니다",
+    "invalidField": "잘못된 {{name}} 필드: {{value}}",
+    "updateSuccess": "예약된 작업 구성이 성공적으로 업데이트되었습니다.",
+    "updateError": "예약된 작업 구성을 업데이트하는 데 실패했습니다."
+  },
+  "buttons": {
+    "run": "실행",
+    "rerun": "재실행"
+  },
+  "metadataReplace": {
+    "label": "메타데이터 교체 모드:",
+    "selectMode": "모드 선택",
+    "replaceMissing": "누락된 메타데이터만 업데이트 (권장)",
+    "replaceAll": "모든 메타데이터 교체 (기존 덮어쓰기)",
+    "replaceMissingDesc": "메타데이터 정보가 없는 책만 업데이트합니다. 기존 메타데이터는 유지됩니다.",
+    "replaceAllDesc": "이미 메타데이터가 있는 책도 포함하여 모든 책의 메타데이터를 교체합니다. 기존 데이터를 덮어쓰므로 주의해서 사용하세요."
+  },
+  "progress": {
+    "staleWarning": "이 작업이 멈춘 것 같습니다. 5분 이상 업데이트가 없습니다.",
+    "statusLabel": "상태:",
+    "progressLabel": "진행률:",
+    "startedLabel": "시작됨:",
+    "processing": "처리 중...",
+    "stuckMessage": "작업이 중단된 것 같습니다 (업데이트 없음)"
+  },
+  "toast": {
+    "taskQueued": "작업 대기 중",
+    "taskQueuedDetail": "{{name}}이(가) 대기열에 추가되어 백그라운드에서 실행됩니다.",
+    "taskCompleted": "작업 완료",
+    "taskCompletedDetail": "{{name}}이(가) 성공적으로 완료되었습니다.",
+    "taskFailed": "작업 실패",
+    "taskFailedDetail": "{{name}}이(가) 완료되지 못했습니다.",
+    "taskStarted": "작업 시작됨",
+    "taskStartedDetail": "{{name}}이(가) 성공적으로 시작되었습니다.",
+    "startError": "{{name}} 시작에 실패했습니다.",
+    "alreadyRunning": "작업이 이미 실행 중",
+    "alreadyRunningDetail": "이 작업이 이미 진행 중이거나 대기 중입니다.",
+    "taskCancelled": "작업 취소됨",
+    "cancelledDetail": "작업이 성공적으로 취소되었습니다.",
+    "cancelFailed": "취소 실패",
+    "cancelError": "작업을 취소하는 데 실패했습니다. 작업이 이미 완료되었거나 실패했을 수 있습니다.",
+    "cancelNoId": "ID 없이 작업을 취소할 수 없습니다.",
+    "loadError": "작업을 불러오는 데 실패했습니다",
+    "metadataScheduled": "메타데이터 업데이트 예약됨",
+    "metadataScheduledDetail": "선택한 책의 메타데이터 업데이트가 성공적으로 예약되었습니다.",
+    "metadataAlreadyRunningDetail": "메타데이터 새로 고침 작업이 이미 진행 중입니다. 다른 작업을 시작하기 전에 완료될 때까지 기다려 주세요.",
+    "metadataFailed": "메타데이터 업데이트 실패",
+    "metadataFailedDetail": "메타데이터 업데이트를 예약하는 중 예상치 못한 오류가 발생했습니다. 나중에 다시 시도하거나 문제가 지속되면 지원팀에 문의하세요."
+  }
+}

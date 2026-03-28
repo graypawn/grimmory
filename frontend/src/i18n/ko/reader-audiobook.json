@@ -1,0 +1,64 @@
+{
+  "loading": "오디오북 로딩 중...",
+  "untitled": "제목 없음",
+  "unknownAuthor": "저자 미상",
+  "coverAlt": "표지",
+  "header": {
+    "backTooltip": "뒤로",
+    "bookmarksTooltip": "북마크",
+    "chaptersTracksTooltip": "챕터/트랙"
+  },
+  "trackInfo": {
+    "trackOf": "트랙 {{ current }} / {{ total }}",
+    "chapterOf": "챕터 {{ current }} / {{ total }}"
+  },
+  "controls": {
+    "previousTrackTooltip": "이전 트랙",
+    "previousChapterTooltip": "이전 챕터",
+    "rewindTooltip": "-30초",
+    "forwardTooltip": "+30초",
+    "nextTrackTooltip": "다음 트랙",
+    "nextChapterTooltip": "다음 챕터"
+  },
+  "extra": {
+    "addBookmark": "북마크 추가",
+    "sleepTimer": "수면 타이머",
+    "endOfChapter": "챕터 끝"
+  },
+  "details": {
+    "narratedBy": "낭독: {{ narrator }}",
+    "kbps": "{{ bitrate }} kbps",
+    "totalDuration": "총 {{ duration }}"
+  },
+  "sidebar": {
+    "tracks": "트랙",
+    "chapters": "챕터"
+  },
+  "bookmarks": {
+    "title": "북마크",
+    "empty": "북마크가 없습니다",
+    "emptyHint": "북마크를 추가해 위치를 저장하세요",
+    "deleteTooltip": "삭제",
+    "bookmarkAt": "{{ time }}에 북마크"
+  },
+  "sleepTimerMenu": {
+    "minutes15": "15분",
+    "minutes30": "30분",
+    "minutes45": "45분",
+    "minutes60": "60분",
+    "endOfChapter": "챕터 끝",
+    "cancelTimer": "타이머 취소"
+  },
+  "toast": {
+    "loadFailed": "오디오북을 불러오는 데 실패했습니다",
+    "audioLoadFailed": "오디오를 불러오는 데 실패했습니다",
+    "sleepTimerSet": "{{ minutes }}분 후 재생이 중지됩니다",
+    "sleepTimerEndOfChapter": "챕터가 끝나면 재생이 중지됩니다",
+    "sleepTimerStopped": "수면 타이머로 재생이 중지되었습니다",
+    "bookmarkAdded": "북마크 추가됨",
+    "bookmarkExists": "북마크 이미 존재",
+    "bookmarkExistsDetail": "이 위치에 이미 북마크가 있습니다",
+    "bookmarkFailed": "북마크 추가에 실패했습니다",
+    "bookmarkDeleted": "북마크 삭제됨"
+  }
+}

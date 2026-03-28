@@ -1,0 +1,17 @@
+{
+  "tabs": {
+    "reader": "리더",
+    "view": "보기",
+    "metadata1": "메타데이터 1",
+    "metadata2": "메타데이터 2",
+    "application": "애플리케이션",
+    "users": "사용자",
+    "email": "이메일",
+    "patterns": "패턴",
+    "authentication": "OIDC",
+    "tasks": "작업",
+    "auditLogs": "감사 로그",
+    "opds": "OPDS",
+    "devices": "기기"
+  }
+}

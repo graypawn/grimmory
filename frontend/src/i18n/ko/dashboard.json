@@ -1,0 +1,66 @@
+{
+  "main": {
+    "pageTitle": "대시보드",
+    "welcomeTitle": "Grimmory에 오신 것을 환영합니다!",
+    "welcomeSubtitle": "첫 번째 라이브러리를 만들어 보세요",
+    "welcomeDescription": "라이브러리는 모든 책이 있는 곳입니다. 오늘 디지털 컬렉션을 시작해 보세요!",
+    "createLibrary": "라이브러리 만들기",
+    "customizeDashboard": "대시보드 사용자 지정"
+  },
+  "scroller": {
+    "noBooksFound": "이 스크롤러에 책이 없습니다.",
+    "loadError": "책을 불러오는 데 실패했습니다! 페이지를 새로 고침해 주세요.",
+    "continueListening": "계속 듣기",
+    "continueReading": "계속 읽기",
+    "recentlyAdded": "최근 추가됨",
+    "discoverNew": "새로운 책 발견하기",
+    "magicShelf": "매직 쉘프",
+    "default": "스크롤러"
+  },
+  "settings": {
+    "title": "대시보드 설정",
+    "description": "다양한 책 컬렉션에서 최대 5개의 스크롤러를 추가하고 동작을 사용자 지정하세요",
+    "type": "유형",
+    "selectType": "유형 선택",
+    "magicShelf": "매직 쉘프",
+    "selectMagicShelf": "매직 쉘프 선택",
+    "sortField": "정렬 기준",
+    "selectField": "필드 선택",
+    "direction": "방향",
+    "selectDirection": "방향 선택",
+    "maxItems": "최대 항목 수",
+    "addScroller": "스크롤러 추가",
+    "resetToDefault": "기본값으로 재설정",
+    "scrollerTypes": {
+      "lastRead": "계속 읽기",
+      "lastListened": "계속 듣기",
+      "latestAdded": "최근 추가됨",
+      "random": "새로운 책 발견하기",
+      "magicShelf": "매직 쉘프",
+      "default": "스크롤러"
+    },
+    "sortFields": {
+      "title": "제목",
+      "fileName": "파일명",
+      "filePath": "파일 경로",
+      "addedOn": "추가 날짜",
+      "author": "저자",
+      "authorSurnameVorname": "저자 (성)",
+      "seriesName": "시리즈명",
+      "seriesNumber": "시리즈 번호",
+      "personalRating": "개인 평점",
+      "publisher": "출판사",
+      "publishedDate": "출판 날짜",
+      "lastReadTime": "최근 읽은 날짜",
+      "readStatus": "읽기 상태",
+      "dateFinished": "완료 날짜",
+      "readingProgress": "읽기 진행률",
+      "bookType": "파일 형식",
+      "pageCount": "페이지 수"
+    },
+    "sortDirections": {
+      "asc": "오름차순",
+      "desc": "내림차순"
+    }
+  }
+}

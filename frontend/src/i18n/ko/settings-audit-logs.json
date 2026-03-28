@@ -1,0 +1,19 @@
+{
+  "title": "감사 로그",
+  "description": "시스템 전체에서 수행된 관리자 중요 작업의 기록을 봅니다.",
+  "sectionTitle": "활동 로그",
+  "filterPlaceholder": "작업으로 필터",
+  "userFilterPlaceholder": "사용자로 필터",
+  "dateRangePlaceholder": "날짜 범위로 필터",
+  "clearFilters": "모든 필터 지우기",
+  "autoRefresh": "자동 새로 고침 (10초)",
+  "pageReport": "{totalRecords}개 중 {first}~{last} 항목 표시",
+  "empty": "감사 로그가 없습니다",
+  "columns": {
+    "timestamp": "시간",
+    "user": "사용자",
+    "action": "작업",
+    "description": "설명",
+    "ip": "IP 주소"
+  }
+}
