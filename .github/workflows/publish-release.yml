@@ -54,12 +54,6 @@ jobs:
       - name: Set Up Docker Buildx
         uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
 
-      - name: Authenticate to Docker Hub
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Authenticate to GitHub Container Registry
         uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
@@ -75,19 +69,17 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            grimmory/grimmory:${{ env.release_tag }}
-            grimmory/grimmory:latest
-            ghcr.io/grimmory-tools/grimmory:${{ env.release_tag }}
-            ghcr.io/grimmory-tools/grimmory:latest
+            ghcr.io/graypawn/grimmory:${{ env.release_tag }}
+            ghcr.io/graypawn/grimmory:latest
           build-args: |
             APP_VERSION=${{ env.release_tag }}
             APP_REVISION=${{ env.commit_sha }}
           cache-from: |
             type=gha,scope=image-shared
-            type=registry,ref=ghcr.io/grimmory-tools/grimmory:buildcache
+            type=registry,ref=ghcr.io/graypawn/grimmory:buildcache
           cache-to: |
             type=gha,scope=image-shared,mode=max
-            type=registry,ref=ghcr.io/grimmory-tools/grimmory:buildcache,mode=max
+            type=registry,ref=ghcr.io/graypawn/grimmory:buildcache,mode=max
 
       - name: Publish Draft GitHub Release
         env:
