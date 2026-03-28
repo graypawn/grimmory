@@ -64,8 +64,7 @@ jobs:
         run: |
           short_sha=$(git rev-parse --short HEAD)
           build_date=$(date -u +%Y%m%d)
-          branch_slug=$(echo "${{ inputs.fix_branch }}" | sed 's|/|-|g')
-          fix_tag="${branch_slug}-${build_date}-${short_sha}"
+          fix_tag="fix-${build_date}-${short_sha}"
           echo "fix_tag=$fix_tag" >> "$GITHUB_ENV"
           echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
           echo "Fix tag: $fix_tag"
