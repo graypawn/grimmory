@@ -1,0 +1,86 @@
+name: Fix Branch - Build and Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      fix_branch:
+        description: 'Fix branch name (e.g. fix/magic-shelf-effect-injector)'
+        required: true
+        type: string
+
+jobs:
+  test-suite:
+    name: Test Suite
+    uses: ./.github/workflows/test-suite.yml
+    permissions:
+      contents: read
+      checks: write
+    with:
+      checkout_ref: ${{ inputs.fix_branch }}
+      save_gradle_cache: false
+
+  build-and-push:
+    name: Build and Push Fix Image
+    needs: [test-suite]
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout Fix Branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.fix_branch }}
+
+      - name: Merge main (fork CI overlay)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git merge origin/main --no-edit
+
+      - name: Generate Fix Tag
+        run: |
+          short_sha=$(git rev-parse --short HEAD)
+          build_date=$(date -u +%Y%m%d)
+          branch_slug=$(echo "${{ inputs.fix_branch }}" | sed 's|/|-|g')
+          fix_tag="${branch_slug}-${build_date}-${short_sha}"
+          echo "fix_tag=$fix_tag" >> "$GITHUB_ENV"
+          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "Fix tag: $fix_tag"
+
+      - name: Set Up QEMU for Multi-Arch Builds
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
+        with:
+          cache-image: false
+
+      - name: Set Up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Authenticate to GitHub Container Registry
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/graypawn/grimmory:${{ env.fix_tag }}
+          build-args: |
+            APP_VERSION=${{ env.fix_tag }}
+            APP_REVISION=${{ env.commit_sha }}
+          cache-from: |
+            type=gha,scope=image-shared
+            type=registry,ref=ghcr.io/graypawn/grimmory:buildcache
+          cache-to: |
+            type=gha,scope=image-shared,mode=max
+            type=registry,ref=ghcr.io/graypawn/grimmory:buildcache,mode=max
