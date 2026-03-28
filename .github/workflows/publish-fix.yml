@@ -9,19 +9,44 @@ on:
         type: string
 
 jobs:
+  validate:
+    name: Validate Fix Branch
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.check.outputs.branch }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate branch exists
+        id: check
+        run: |
+          branch="${{ inputs.fix_branch }}"
+          echo "Available fix/ branches:"
+          git branch -r --list 'origin/fix/*' | sed 's|origin/||' | sort
+          echo "---"
+          if ! git rev-parse --verify "origin/$branch" >/dev/null 2>&1; then
+            echo "::error::Branch '$branch' not found. See available branches above."
+            exit 1
+          fi
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
   test-suite:
     name: Test Suite
+    needs: [validate]
     uses: ./.github/workflows/test-suite.yml
     permissions:
       contents: read
       checks: write
     with:
-      checkout_ref: ${{ inputs.fix_branch }}
+      checkout_ref: ${{ needs.validate.outputs.branch }}
       save_gradle_cache: false
 
   build-and-push:
     name: Build and Push Fix Image
-    needs: [test-suite]
+    needs: [validate, test-suite]
     runs-on: ubuntu-latest
 
     permissions:
@@ -32,14 +57,8 @@ jobs:
       - name: Checkout Fix Branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
-          fetch-depth: 0
-          ref: ${{ inputs.fix_branch }}
-
-      - name: Merge main (fork CI overlay)
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git merge origin/main --no-edit
+          fetch-depth: 1
+          ref: ${{ needs.validate.outputs.branch }}
 
       - name: Generate Fix Tag
         run: |
