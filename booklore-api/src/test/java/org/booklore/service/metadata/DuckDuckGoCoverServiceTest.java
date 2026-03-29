@@ -250,12 +250,12 @@ class DuckDuckGoCoverServiceTest {
     @Test
     void duplicateRemoval_generalImagesExcludeSiteUrls() {
         List<CoverImage> siteImages = List.of(
-                new CoverImage("https://amazon.com/img1", 500, 700, 1),
-                new CoverImage("https://goodreads.com/img2", 500, 700, 2)
+                new CoverImage("https://ridibooks.com/img1", 500, 700, 1),
+                new CoverImage("https://series.naver.com/img2", 500, 700, 2)
         );
 
         List<CoverImage> generalImages = new java.util.ArrayList<>(List.of(
-                new CoverImage("https://amazon.com/img1", 500, 700, 1),
+                new CoverImage("https://ridibooks.com/img1", 500, 700, 1),
                 new CoverImage("https://other.com/img3", 500, 700, 2),
                 new CoverImage("https://example.com/img4", 500, 700, 3)
         ));
@@ -289,20 +289,20 @@ class DuckDuckGoCoverServiceTest {
     }
 
     @Test
-    void imagePrioritization_amazonAndGoodreadsFirst() {
+    void imagePrioritization_koreanSitesFirst() {
         List<CoverImage> priority = new java.util.ArrayList<>();
         List<CoverImage> others = new java.util.ArrayList<>();
 
         List<String> links = List.of(
                 "https://other.com/img1",
-                "https://amazon.com/img2",
-                "https://goodreads.com/img3",
+                "https://ridibooks.com/img2",
+                "https://series.naver.com/img3",
                 "https://example.com/img4"
         );
 
         for (String link : links) {
             CoverImage dto = new CoverImage(link, 500, 700, 0);
-            if (link.contains("amazon") || link.contains("goodreads")) {
+            if (link.contains("novelpia.com") || link.contains("namu.wiki") || link.contains("series.naver.com") || link.contains("page.kakao.com") || link.contains("ridibooks.com") || link.contains("munpia.com")) {
                 priority.add(dto);
             } else {
                 others.add(dto);
@@ -312,8 +312,8 @@ class DuckDuckGoCoverServiceTest {
         List<CoverImage> all = new java.util.ArrayList<>(priority);
         all.addAll(others);
 
-        assertThat(all.get(0).getUrl()).contains("amazon");
-        assertThat(all.get(1).getUrl()).contains("goodreads");
+        assertThat(all.get(0).getUrl()).contains("ridibooks.com");
+        assertThat(all.get(1).getUrl()).contains("series.naver.com");
         assertThat(all).hasSize(4);
     }
 
@@ -361,7 +361,7 @@ class DuckDuckGoCoverServiceTest {
             String htmlWithToken = "<html>vqd=\"12345-67890\"</html>";
             String jsonBody = """
                     {"results":[
-                        {"image":"https://amazon.com/img1.jpg","width":500,"height":700},
+                        {"image":"https://ridibooks.com/img1.jpg","width":500,"height":700},
                         {"image":"https://other.com/img2.jpg","width":400,"height":600}
                     ]}""";
 
@@ -398,7 +398,7 @@ class DuckDuckGoCoverServiceTest {
             String htmlWithToken = "<html>vqd=\"12345-67890\"</html>";
             String jsonBody = """
                     {"results":[
-                        {"image":"https://amazon.com/square.jpg","width":500,"height":500}
+                        {"image":"https://ridibooks.com/square.jpg","width":500,"height":500}
                     ]}""";
 
             try (MockedStatic<Jsoup> jsoupMock = mockStatic(Jsoup.class, CALLS_REAL_METHODS)) {
@@ -433,9 +433,9 @@ class DuckDuckGoCoverServiceTest {
             String htmlWithToken = "<html>vqd=\"12345-67890\"</html>";
             String jsonBody = """
                     {"results":[
-                        {"image":"https://amazon.com/tall.jpg","width":400,"height":600},
-                        {"image":"https://amazon.com/small.jpg","width":200,"height":300},
-                        {"image":"https://amazon.com/wide.jpg","width":700,"height":500}
+                        {"image":"https://ridibooks.com/tall.jpg","width":400,"height":600},
+                        {"image":"https://ridibooks.com/small.jpg","width":200,"height":300},
+                        {"image":"https://ridibooks.com/wide.jpg","width":700,"height":500}
                     ]}""";
 
             try (MockedStatic<Jsoup> jsoupMock = mockStatic(Jsoup.class, CALLS_REAL_METHODS)) {
@@ -472,11 +472,11 @@ class DuckDuckGoCoverServiceTest {
             String htmlWithToken = "<html>vqd=\"12345-67890\"</html>";
             String siteJson = """
                     {"results":[
-                        {"image":"https://amazon.com/shared.jpg","width":500,"height":700}
+                        {"image":"https://ridibooks.com/shared.jpg","width":500,"height":700}
                     ]}""";
             String generalJson = """
                     {"results":[
-                        {"image":"https://amazon.com/shared.jpg","width":500,"height":700},
+                        {"image":"https://ridibooks.com/shared.jpg","width":500,"height":700},
                         {"image":"https://unique.com/other.jpg","width":400,"height":600}
                     ]}""";
 
@@ -511,7 +511,7 @@ class DuckDuckGoCoverServiceTest {
                 List<CoverImage> result = service.getCovers(request);
 
                 long sharedUrlCount = result.stream()
-                        .filter(img -> img.getUrl().equals("https://amazon.com/shared.jpg"))
+                        .filter(img -> img.getUrl().equals("https://ridibooks.com/shared.jpg"))
                         .count();
                 assertThat(sharedUrlCount).isEqualTo(1);
             }

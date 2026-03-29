@@ -26,7 +26,7 @@ public class DuckDuckGoCoverService implements BookCoverProvider {
 
     private static final String SEARCH_BASE_URL = "https://duckduckgo.com/?q=";
     private static final String JSON_BASE_URL = "https://duckduckgo.com/i.js?o=json&q=";
-    private static final String SITE_FILTER = "+(site%3Aamazon.com+OR+site%3Agoodreads.com)";
+    private static final String SITE_FILTER = "+(site%3Anovelpia.com+OR+site%3Anamu.wiki+OR+site%3Aseries.naver.com+OR+site%3Apage.kakao.com+OR+site%3Aridibooks.com+OR+site%3Amunpia.com)";
     private static final String SEARCH_PARAMS_TALL = "&iar=images&iaf=size%3ALarge%2Clayout%3ATall";
     private static final String JSON_PARAMS_TALL = "&iar=images&iaf=size%3ALarge%2Clayout%3ATall";
     private static final String SEARCH_PARAMS_SQUARE = "&iar=images&iaf=size%3ALarge%2Clayout%3ASquare";
@@ -86,7 +86,7 @@ public class DuckDuckGoCoverService implements BookCoverProvider {
             return Collections.emptyList();
         }
         String siteSearchToken = siteMatcher.group(1);
-        List<CoverImage> siteFilteredImages = fetchImagesFromApi(searchTerm + " (site:amazon.com OR site:goodreads.com)", siteSearchToken, cookies, siteUrl, jsonParams);
+        List<CoverImage> siteFilteredImages = fetchImagesFromApi(searchTerm + " (site:novelpia.com OR site:namu.wiki OR site:series.naver.com OR site:page.kakao.com OR site:ridibooks.com OR site:munpia.com)", siteSearchToken, cookies, siteUrl, jsonParams);
         siteFilteredImages.removeIf(dto -> dto.getWidth() < 350);
         if (isAudiobook) {
             siteFilteredImages.removeIf(dto -> !isApproximatelySquare(dto.getWidth(), dto.getHeight()));
@@ -189,7 +189,7 @@ public class DuckDuckGoCoverService implements BookCoverProvider {
                     int w = img.path("width").asInt();
                     int h = img.path("height").asInt();
                     CoverImage dto = new CoverImage(link, w, h, 0);
-                    if (link.contains("amazon") || link.contains("goodreads")) {
+                    if (link.contains("novelpia.com") || link.contains("namu.wiki") || link.contains("series.naver.com") || link.contains("page.kakao.com") || link.contains("ridibooks.com") || link.contains("munpia.com")) {
                         priority.add(dto);
                     } else {
                         others.add(dto);
