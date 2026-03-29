@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       fix_branch:
-        description: 'Fix branch name (e.g. fix/magic-shelf-effect-injector)'
-        required: true
+        description: 'Fix branch name (e.g. fix/magic-shelf-effect-injector). Leave empty for most recently committed fix branch.'
+        required: false
         type: string
 
 jobs:
@@ -24,6 +24,17 @@ jobs:
         id: check
         run: |
           branch="${{ inputs.fix_branch }}"
+
+          if [ -z "$branch" ]; then
+            echo "No branch specified. Detecting most recently committed fix branch..."
+            branch=$(git branch -r --list 'origin/fix/*' --sort=-committerdate | head -n 1 | sed 's|origin/||' | xargs)
+            if [ -z "$branch" ]; then
+              echo "::error::No fix/* branches found."
+              exit 1
+            fi
+            echo "Auto-selected: $branch"
+          fi
+
           echo "Available fix/ branches:"
           git branch -r --list 'origin/fix/*' | sed 's|origin/||' | sort
           echo "---"
