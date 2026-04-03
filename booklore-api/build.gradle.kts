@@ -119,6 +119,9 @@ dependencies {
     // jackson-annotations version is managed by Jackson 3 BOM (requires 2.20+)
     implementation("com.fasterxml.jackson.core:jackson-annotations")
 
+    // --- Korean Text Analysis ---
+    implementation("org.apache.lucene:lucene-analysis-nori:9.7.0")
+
     // --- Caching ---
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")

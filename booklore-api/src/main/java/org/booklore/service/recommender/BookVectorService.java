@@ -3,6 +3,10 @@ package org.booklore.service.recommender;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.ko.KoreanAnalyzer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.booklore.model.entity.AuthorEntity;
 import org.booklore.model.entity.BookEntity;
 import org.booklore.model.entity.BookMetadataEntity;
@@ -12,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,8 +28,12 @@ public class BookVectorService {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final int VECTOR_DIMENSION = 128;
-    private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s+");
-    private static final Pattern NON_ALPHANUMERIC_EXCEPT_SPACE_PATTERN = Pattern.compile("[^a-z0-9\\s]");
+    private static final Analyzer KOREAN_ANALYZER = new KoreanAnalyzer();
+    private static final Set<String> STOPWORDS = Set.of(
+            "a", "an", "the", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "by", "from",
+            "is", "it", "as", "be", "was", "are", "been", "has", "had", "have", "do", "not", "no", "so", "if",
+            "this", "that", "its", "all", "can", "up", "out", "my", "who", "how", "new", "also", "about"
+    );
 
     public double[] generateEmbedding(BookEntity book) {
         if (book.getMetadata() == null) {
@@ -69,12 +77,21 @@ public class BookVectorService {
     }
 
     private void addTextFeatures(Map<String, Double> features, String prefix, String text, double weight) {
-        String[] words = WHITESPACE_PATTERN.split(NON_ALPHANUMERIC_EXCEPT_SPACE_PATTERN.matcher(text.toLowerCase()).replaceAll(" "));
+        try (TokenStream stream = KOREAN_ANALYZER.tokenStream("content", text.toLowerCase())) {
+            CharTermAttribute charTermAttr = stream.addAttribute(CharTermAttribute.class);
+            stream.reset();
 
-        Arrays.stream(words)
-                .filter(w -> w.length() > 3)
-                .limit(20)
-                .forEach(word -> features.merge(prefix + "_" + word, weight, Double::sum));
+            int count = 0;
+            while (stream.incrementToken() && count < 20) {
+                String token = charTermAttr.toString();
+                if (!token.isEmpty() && !STOPWORDS.contains(token)) {
+                    features.merge(prefix + "_" + token, weight, Double::sum);
+                    count++;
+                }
+            }
+        } catch (IOException e) {
+            log.warn("Failed to tokenize text for features: {}", text, e);
+        }
     }
 
     private double[] featuresToVector(Map<String, Double> features) {

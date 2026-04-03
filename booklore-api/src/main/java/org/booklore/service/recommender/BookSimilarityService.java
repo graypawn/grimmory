@@ -2,6 +2,11 @@ package org.booklore.service.recommender;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.ko.KoreanAnalyzer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.booklore.model.entity.AuthorEntity;
 import org.booklore.model.entity.BookEntity;
 import org.booklore.model.entity.BookMetadataEntity;
@@ -9,16 +14,21 @@ import org.booklore.model.entity.CategoryEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.*;
-import java.util.regex.Pattern;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
 public class BookSimilarityService {
 
-    private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s+");
-    private static final Pattern NON_ALPHANUMERIC_EXCEPT_SPACE_PATTERN = Pattern.compile("[^a-z0-9 ]");
+    private static final Analyzer KOREAN_ANALYZER = new KoreanAnalyzer();
+    private static final Set<String> STOPWORDS = Set.of(
+            "a", "an", "the", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "by", "from",
+            "is", "it", "as", "be", "was", "are", "been", "has", "had", "have", "do", "not", "no", "so", "if",
+            "this", "that", "its", "all", "can", "up", "out", "my", "who", "how", "new", "also", "about"
+    );
 
     @Getter
     public enum SimilarityWeight {
@@ -99,10 +109,20 @@ public class BookSimilarityService {
         Map<String, Integer> vector = new HashMap<>();
         if (text == null || text.isBlank()) return vector;
 
-        String[] tokens = WHITESPACE_PATTERN.split(NON_ALPHANUMERIC_EXCEPT_SPACE_PATTERN.matcher(text.toLowerCase()).replaceAll(""));
-        for (String token : tokens) {
-            vector.put(token, vector.getOrDefault(token, 0) + 1);
+        try (TokenStream stream = KOREAN_ANALYZER.tokenStream("content", text.toLowerCase())) {
+            CharTermAttribute charTermAttr = stream.addAttribute(CharTermAttribute.class);
+            stream.reset();
+
+            while (stream.incrementToken()) {
+                String token = charTermAttr.toString();
+                if (!token.isEmpty() && !STOPWORDS.contains(token)) {
+                    vector.put(token, vector.getOrDefault(token, 0) + 1);
+                }
+            }
+        } catch (IOException e) {
+            log.warn("Failed to tokenize text: {}", text, e);
         }
+
         return vector;
     }
 
