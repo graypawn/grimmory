@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.ko.KoreanAnalyzer;
+import org.apache.lucene.analysis.ko.KoreanTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.MorphosyntacticAnalysisAttribute;
 import org.booklore.model.entity.AuthorEntity;
 import org.booklore.model.entity.BookEntity;
 import org.booklore.model.entity.BookMetadataEntity;
@@ -28,12 +30,8 @@ public class BookVectorService {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final int VECTOR_DIMENSION = 128;
-    private static final Analyzer KOREAN_ANALYZER = new KoreanAnalyzer();
-    private static final Set<String> STOPWORDS = Set.of(
-            "a", "an", "the", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "by", "from",
-            "is", "it", "as", "be", "was", "are", "been", "has", "had", "have", "do", "not", "no", "so", "if",
-            "this", "that", "its", "all", "can", "up", "out", "my", "who", "how", "new", "also", "about"
-    );
+    private static final Analyzer KOREAN_ANALYZER =
+            new KoreanAnalyzer(null, KoreanTokenizer.DecompoundMode.NONE, null, false);
 
     public double[] generateEmbedding(BookEntity book) {
         if (book.getMetadata() == null) {
@@ -76,15 +74,31 @@ public class BookVectorService {
         return featuresToVector(features);
     }
 
+    private boolean isNoiseToken(String token, String pos) {
+        // "나"/"내" + NP(대명사): 웹소설에서 흔한 1인칭 노이즈
+        if (("나".equals(token) || "내".equals(token)) && pos.startsWith("NP")) return true;
+        // "하"/"되" + VV(동사): 의미 없는 일반 동사
+        if (("하".equals(token) || "되".equals(token)) && pos.startsWith("VV")) return true;
+        // "하" + VX(보조동사): "가야 했다"의 보조동사
+        if ("하".equals(token) && pos.startsWith("VX")) return true;
+        // "이" + VCP(긍정지정사): "미륵이니라"의 지정사
+        if ("이".equals(token) && pos.startsWith("VCP")) return true;
+        return false;
+    }
+
     private void addTextFeatures(Map<String, Double> features, String prefix, String text, double weight) {
         try (TokenStream stream = KOREAN_ANALYZER.tokenStream("content", text.toLowerCase())) {
             CharTermAttribute charTermAttr = stream.addAttribute(CharTermAttribute.class);
+            MorphosyntacticAnalysisAttribute morphAttr =
+                    stream.addAttribute(MorphosyntacticAnalysisAttribute.class);
             stream.reset();
 
             int count = 0;
             while (stream.incrementToken() && count < 20) {
                 String token = charTermAttr.toString();
-                if (!token.isEmpty() && !STOPWORDS.contains(token)) {
+                String pos = morphAttr.getMorphosyntacticAnalysis();
+
+                if (!isNoiseToken(token, pos)) {
                     features.merge(prefix + "_" + token, weight, Double::sum);
                     count++;
                 }
