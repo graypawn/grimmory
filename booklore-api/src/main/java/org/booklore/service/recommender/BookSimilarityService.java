@@ -53,23 +53,39 @@ public class BookSimilarityService {
 
         double score = 0;
 
-        score += SimilarityWeight.AUTHORS.getWeight() *
-                jaccardSimilarity(extractNames(metaA.getAuthors()), extractNames(metaB.getAuthors()));
+        double authorJaccard = jaccardSimilarity(extractNames(metaA.getAuthors()), extractNames(metaB.getAuthors()));
+        double authorScore = SimilarityWeight.AUTHORS.getWeight() * authorJaccard;
+        score += authorScore;
 
-        score += SimilarityWeight.CATEGORIES.getWeight() *
-                jaccardSimilarity(extractNames(metaA.getCategories()), extractNames(metaB.getCategories()));
+        double categoryJaccard = jaccardSimilarity(extractNames(metaA.getCategories()), extractNames(metaB.getCategories()));
+        double categoryScore = SimilarityWeight.CATEGORIES.getWeight() * categoryJaccard;
+        score += categoryScore;
 
-        score += SimilarityWeight.TITLE.getWeight() *
-                cosineSimilarity(tokenize(metaA.getTitle()), tokenize(metaB.getTitle()));
+        Map<String, Integer> titleTokensA = tokenize(metaA.getTitle());
+        Map<String, Integer> titleTokensB = tokenize(metaB.getTitle());
+        double titleCosine = cosineSimilarity(titleTokensA, titleTokensB);
+        double titleScore = SimilarityWeight.TITLE.getWeight() * titleCosine;
+        score += titleScore;
 
-        if (isEqualIgnoreCase(metaA.getSeriesName(), metaB.getSeriesName())) {
-            score += SimilarityWeight.SERIES.getWeight();
-        }
+        boolean seriesMatch = isEqualIgnoreCase(metaA.getSeriesName(), metaB.getSeriesName());
+        double seriesScore = seriesMatch ? SimilarityWeight.SERIES.getWeight() : 0.0;
+        score += seriesScore;
 
-        score += SimilarityWeight.RATING.getWeight() *
-                ratingSimilarity(metaA.getRating(), metaB.getRating());
+        double ratingRaw = ratingSimilarity(metaA.getRating(), metaB.getRating());
+        double ratingScore = SimilarityWeight.RATING.getWeight() * ratingRaw;
+        score += ratingScore;
 
-        return round(score, 5);
+        double total = round(score, 5);
+        log.debug("[Similarity] '{}' vs '{}' => authors: {}*{}={}, categories: {}*{}={}, title: {}*{}={}, series: {}(match={})={}, rating: {}*{}={} => total={}",
+                metaA.getTitle(), metaB.getTitle(),
+                SimilarityWeight.AUTHORS.getWeight(), authorJaccard, authorScore,
+                SimilarityWeight.CATEGORIES.getWeight(), categoryJaccard, categoryScore,
+                SimilarityWeight.TITLE.getWeight(), titleCosine, titleScore,
+                SimilarityWeight.SERIES.getWeight(), seriesMatch, seriesScore,
+                SimilarityWeight.RATING.getWeight(), ratingRaw, ratingScore,
+                total);
+
+        return total;
     }
 
     private Set<String> extractNames(Collection<?> entities) {
@@ -119,6 +135,8 @@ public class BookSimilarityService {
         Map<String, Integer> vector = new HashMap<>();
         if (text == null || text.isBlank()) return vector;
 
+        List<String> kept = new ArrayList<>();
+        List<String> removed = new ArrayList<>();
         try (TokenStream stream = KOREAN_ANALYZER.tokenStream("content", text.toLowerCase())) {
             CharTermAttribute charTermAttr = stream.addAttribute(CharTermAttribute.class);
             PartOfSpeechAttribute posAttr =
@@ -131,11 +149,15 @@ public class BookSimilarityService {
 
                 if (!isNoiseToken(token, pos)) {
                     vector.put(token, vector.getOrDefault(token, 0) + 1);
+                    kept.add(token + "/" + pos);
+                } else {
+                    removed.add(token + "/" + pos);
                 }
             }
         } catch (IOException e) {
             log.warn("Failed to tokenize text: {}", text, e);
         }
+        log.debug("[Nori:Similarity] text='{}' => kept={}, removed={}", text, kept, removed);
 
         return vector;
     }

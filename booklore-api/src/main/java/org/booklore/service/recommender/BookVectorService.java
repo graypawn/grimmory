@@ -93,6 +93,8 @@ public class BookVectorService {
                     stream.addAttribute(PartOfSpeechAttribute.class);
             stream.reset();
 
+            List<String> kept = new ArrayList<>();
+            List<String> removed = new ArrayList<>();
             int count = 0;
             while (stream.incrementToken() && count < 20) {
                 String token = charTermAttr.toString();
@@ -100,9 +102,13 @@ public class BookVectorService {
 
                 if (!isNoiseToken(token, pos)) {
                     features.merge(prefix + "_" + token, weight, Double::sum);
+                    kept.add(token + "/" + pos);
                     count++;
+                } else {
+                    removed.add(token + "/" + pos);
                 }
             }
+            log.debug("[Nori:Vector] prefix={}, text='{}' => kept={}, removed={}", prefix, text, kept, removed);
         } catch (IOException e) {
             log.warn("Failed to tokenize text for features: {}", text, e);
         }

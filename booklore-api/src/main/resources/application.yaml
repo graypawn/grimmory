@@ -101,6 +101,7 @@ logging:
   level:
     root: ${ROOT_LOG_LEVEL:INFO}
     org.booklore: ${LOG_LEVEL:INFO}
+    org.booklore.service.recommender: ${RECOMMENDER_LOG_LEVEL:DEBUG}
     org.apache.fontbox: ERROR
     org.apache.pdfbox: ERROR
     org.quartz.core.QuartzScheduler: WARN
