@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, OnInit} from '@angular/core';
+import {Component, computed, effect, inject, Injector, OnInit} from '@angular/core';
 import {AbstractControl, FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Button} from 'primeng/button';
 import {NgTemplateOutlet} from '@angular/common';
@@ -248,6 +248,7 @@ const READ_STATUS_KEYS: Record<string, string> = {
 export class MagicShelfComponent implements OnInit {
 
   private readonly t = inject(TranslocoService);
+  private readonly injector = inject(Injector);
   private readonly controlIds = new WeakMap<AbstractControl, string>();
   private controlIdCounter = 0;
 
@@ -522,7 +523,7 @@ export class MagicShelfComponent implements OnInit {
 
         this.initializeForm(shelf);
         this.formInitializedFromShelf = true;
-      });
+      }, {injector: this.injector});
     } else {
       this.initializeForm();
       this.formInitializedFromShelf = true;
