@@ -1,0 +1,10 @@
+{
+  "toolbar": {
+    "switchToLightMode": "라이트 모드로 전환",
+    "switchToDarkMode": "다크 모드로 전환",
+    "closePdfReader": "PDF 리더 닫기"
+  },
+  "toast": {
+    "failedToLoadBook": "책을 불러오는 데 실패했습니다"
+  }
+}

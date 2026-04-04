@@ -1,0 +1,142 @@
+{
+  "pageTitle": "저자",
+  "browseAllAuthors": "모든 저자 보기",
+  "searchPlaceholder": "저자 이름으로 검색...",
+  "noAuthorsFound": "검색어와 일치하는 저자가 없습니다.",
+  "cardSize": "카드 크기",
+  "sort": {
+    "name": "이름",
+    "bookCount": "책 수",
+    "matched": "매칭됨",
+    "recentlyAdded": "최근 추가됨",
+    "recentlyRead": "최근 읽음",
+    "readingProgress": "읽기 진행률",
+    "avgRating": "평균 평점",
+    "photo": "사진",
+    "seriesCount": "시리즈 수"
+  },
+  "filters": {
+    "all": "전체",
+    "matchStatus": "매칭 상태",
+    "matched": "매칭됨",
+    "unmatched": "매칭 안됨",
+    "photoStatus": "사진 상태",
+    "hasPhoto": "사진 있음",
+    "noPhoto": "사진 없음",
+    "readStatus": "읽기 상태",
+    "allRead": "모두 읽음",
+    "someRead": "일부 읽음",
+    "inProgress": "읽는 중",
+    "unread": "미읽음",
+    "bookCount": "책 수",
+    "library": "라이브러리",
+    "genre": "장르",
+    "reset": "필터 초기화"
+  },
+  "footer": {
+    "selected": "선택됨",
+    "autoMatch": "선택 항목 자동 매칭",
+    "deleteSelected": "선택 항목 삭제",
+    "selectAll": "모두 선택",
+    "deselectAll": "모두 선택 해제"
+  },
+  "toast": {
+    "deleteSuccessSummary": "저자 삭제됨",
+    "deleteSuccessDetail": "저자가 성공적으로 삭제되었습니다.",
+    "deleteFailedSummary": "삭제 실패",
+    "deleteFailedDetail": "저자 삭제에 실패했습니다.",
+    "autoMatchSuccessSummary": "자동 매칭 완료",
+    "autoMatchSuccessDetail": "선택한 저자가 성공적으로 매칭되었습니다.",
+    "autoMatchFailedSummary": "자동 매칭 실패",
+    "autoMatchFailedDetail": "선택한 저자를 자동 매칭하는 데 실패했습니다.",
+    "quickMatchSuccessSummary": "빠른 매칭 완료",
+    "quickMatchSuccessDetail": "저자가 성공적으로 매칭되었습니다.",
+    "quickMatchFailedSummary": "빠른 매칭 실패",
+    "quickMatchFailedDetail": "저자를 빠르게 매칭하는 데 실패했습니다.",
+    "deleteSelectedSuccessSummary": "저자 삭제됨",
+    "deleteSelectedSuccessDetail": "선택한 저자가 성공적으로 삭제되었습니다."
+  },
+  "card": {
+    "matched": "매칭됨",
+    "quickMatch": "빠른 매칭",
+    "book": "권",
+    "books": "권",
+    "menu": {
+      "viewAuthor": "저자 보기",
+      "editAuthor": "저자 편집",
+      "quickMatch": "빠른 매칭",
+      "deleteAuthor": "저자 삭제"
+    }
+  },
+  "editor": {
+    "nameLabel": "이름",
+    "asinLabel": "ASIN",
+    "descriptionLabel": "설명",
+    "saveBtn": "저장",
+    "saving": "저장 중...",
+    "uploadPhotoTooltip": "사진 업로드",
+    "lockField": "필드 잠금",
+    "unlockField": "필드 잠금 해제",
+    "lockAllBtn": "모두 잠금",
+    "unlockAllBtn": "모두 잠금 해제",
+    "searchPhotoTooltip": "사진 검색",
+    "searchPhotoTitle": "저자 사진 검색",
+    "toast": {
+      "successSummary": "저자 업데이트됨",
+      "successDetail": "저자 정보가 성공적으로 업데이트되었습니다.",
+      "errorSummary": "업데이트 실패",
+      "errorDetail": "저자 정보를 업데이트하는 데 실패했습니다.",
+      "photoUploadedSummary": "사진 업로드됨",
+      "photoUploadedDetail": "저자 사진이 성공적으로 업로드되었습니다.",
+      "photoUploadErrorDetail": "저자 사진을 업로드하는 데 실패했습니다."
+    }
+  },
+  "detail": {
+    "quickMatchTooltip": "빠른 매칭",
+    "loading": "저자 정보 로딩 중...",
+    "booksTab": "저자 정보",
+    "editTab": "정보 편집",
+    "matchTab": "저자 검색",
+    "showMore": "더 보기",
+    "showLess": "접기",
+    "booksBy": "{{ name }}의 책",
+    "noBooksFound": "이 저자의 책을 찾을 수 없습니다."
+  },
+  "photoSearch": {
+    "queryLabel": "저자 이름",
+    "queryPlaceholder": "사진을 검색할 저자 이름 입력",
+    "searchBtn": "검색",
+    "resetTooltip": "검색 초기화",
+    "readyTitle": "사진 검색",
+    "readyHint": "저자 이름을 입력하고 검색을 클릭하여 사진을 찾으세요",
+    "searching": "사진 검색 중...",
+    "noResults": "사진을 찾을 수 없음",
+    "noResultsHint": "검색어를 조정해 보세요",
+    "resultsFound": "{{ count }}개의 사진 찾음",
+    "selectBtn": "선택",
+    "photoAlt": "저자 사진 {{ index }}"
+  },
+  "match": {
+    "authorNameLabel": "저자 이름",
+    "authorNamePlaceholder": "검색할 저자 이름 입력",
+    "asinLabel": "ASIN",
+    "asinPlaceholder": "직접 조회할 ASIN 입력",
+    "regionLabel": "지역",
+    "searchBtn": "검색",
+    "searching": "검색 중...",
+    "noResults": "결과를 찾을 수 없음",
+    "noResultsHint": "검색어를 조정하거나, ASIN을 입력하거나, 다른 지역을 선택해 보세요",
+    "readyToSearch": "검색 준비 완료",
+    "readyToSearchHint": "저자 이름으로 검색하거나 ASIN을 입력하여 직접 조회하세요",
+    "resultsFound": "{{ count }}개의 결과 찾음",
+    "matchBtn": "매칭",
+    "toast": {
+      "searchFailedSummary": "검색 실패",
+      "searchFailedDetail": "저자 메타데이터 검색에 실패했습니다.",
+      "matchSuccessSummary": "저자 매칭됨",
+      "matchSuccessDetail": "저자 메타데이터가 성공적으로 업데이트되었습니다.",
+      "matchFailedSummary": "매칭 실패",
+      "matchFailedDetail": "저자와 외부 메타데이터를 매칭하는 데 실패했습니다."
+    }
+  }
+}

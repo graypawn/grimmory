@@ -1,0 +1,55 @@
+{
+  "topbar": {
+    "bookdrop": "북드롭",
+    "createNewLibrary": "새 라이브러리 만들기",
+    "uploadBook": "책 업로드",
+    "charts": "차트",
+    "metadataManager": "메타데이터 관리자",
+    "settings": "설정",
+    "documentation": "문서",
+    "profile": "프로필",
+    "logout": "로그아웃",
+    "language": "언어",
+    "supportGrimmory": "Grimmory 지원하기",
+    "notificationAriaLabel": "알림 아이콘",
+    "createLibrary": "라이브러리 만들기",
+    "stats": "통계",
+    "libraryStats": "라이브러리 통계",
+    "readingStats": "읽기 통계"
+  },
+  "menu": {
+    "home": "홈",
+    "dashboard": "대시보드",
+    "allBooks": "모든 책",
+    "libraries": "라이브러리",
+    "shelves": "책장",
+    "magicShelves": "매직 쉘프",
+    "unshelved": "미분류",
+    "series": "시리즈",
+    "authors": "저자",
+    "notebook": "노트북",
+    "update": "(업데이트)"
+  },
+  "changelog": {
+    "title": "새로운 기능",
+    "description": "최신 업데이트 및 개선 사항",
+    "loading": "변경 로그 로딩 중...",
+    "empty": "사용 가능한 업데이트가 없습니다."
+  },
+  "theme": {
+    "primary": "기본",
+    "surface": "표면"
+  },
+  "uploadDialog": {
+    "chooseFile": "파일 선택:",
+    "selectImage": "이미지 선택",
+    "fileNote": "지원 형식: JPEG, PNG • 최대 파일 크기: 5 MB",
+    "or": "또는",
+    "imageUrl": "이미지 URL:",
+    "urlPlaceholder": "이미지 URL을 붙여넣으세요",
+    "urlNote": "지원 형식: JPEG, PNG • 최대 파일 크기: 5 MB",
+    "errorNoInput": "파일을 선택하거나 URL을 붙여넣어 주세요.",
+    "errorUploadFailed": "이미지 업로드에 실패했습니다.",
+    "errorUploadRetry": "업로드 실패. 다시 시도해 주세요."
+  }
+}

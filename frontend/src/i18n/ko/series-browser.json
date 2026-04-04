@@ -1,0 +1,25 @@
+{
+  "pageTitle": "시리즈",
+  "browseAllSeries": "모든 시리즈 탐색",
+  "searchPlaceholder": "시리즈명 또는 저자로 검색...",
+  "readNext": "다음 책 읽기",
+  "booksRead": "권 읽음",
+  "noSeriesFound": "검색 또는 필터와 일치하는 시리즈가 없습니다.",
+  "noSeriesInCategory": "이 카테고리에 시리즈가 없습니다.",
+  "cardSize": "카드 크기",
+  "filters": {
+    "all": "전체",
+    "notStarted": "시작 전",
+    "inProgress": "진행 중",
+    "completed": "완료",
+    "abandoned": "중단됨"
+  },
+  "sort": {
+    "nameAsc": "이름 (가-하)",
+    "nameDesc": "이름 (하-가)",
+    "bookCount": "책 수",
+    "progress": "진행률",
+    "recentlyRead": "최근 읽은 순",
+    "recentlyAdded": "최근 추가된 순"
+  }
+}
