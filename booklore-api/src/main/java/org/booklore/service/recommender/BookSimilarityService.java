@@ -8,7 +8,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.ko.KoreanAnalyzer;
 import org.apache.lucene.analysis.ko.KoreanTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.MorphosyntacticAnalysisAttribute;
+import org.apache.lucene.analysis.ko.tokenattributes.PartOfSpeechAttribute;
 import org.booklore.model.entity.AuthorEntity;
 import org.booklore.model.entity.BookEntity;
 import org.booklore.model.entity.BookMetadataEntity;
@@ -121,13 +121,13 @@ public class BookSimilarityService {
 
         try (TokenStream stream = KOREAN_ANALYZER.tokenStream("content", text.toLowerCase())) {
             CharTermAttribute charTermAttr = stream.addAttribute(CharTermAttribute.class);
-            MorphosyntacticAnalysisAttribute morphAttr =
-                    stream.addAttribute(MorphosyntacticAnalysisAttribute.class);
+            PartOfSpeechAttribute posAttr =
+                    stream.addAttribute(PartOfSpeechAttribute.class);
             stream.reset();
 
             while (stream.incrementToken()) {
                 String token = charTermAttr.toString();
-                String pos = morphAttr.getMorphosyntacticAnalysis();
+                String pos = posAttr.getLeftPOS().name();
 
                 if (!isNoiseToken(token, pos)) {
                     vector.put(token, vector.getOrDefault(token, 0) + 1);
