@@ -16,12 +16,12 @@
     <button type="button" class="icon-btn" (click)="onCreateBookmark()" [title]="isCurrentCfiBookmarked() ? t('removeBookmark') : t('addBookmark')" [class.active]="isCurrentCfiBookmarked()">
       <app-reader-icon name="bookmark" />
     </button>
-    <button type="button" class="icon-btn" (click)="onOpenSearch()" [title]="t('search')">
-      <app-reader-icon name="search" />
-    </button>
   </div>
   <span class="chapter-title">{{ bookTitle() }}</span>
   <div class="header-right">
+    <button type="button" class="icon-btn desktop-only" (click)="onOpenSearch()" [title]="t('search')">
+      <app-reader-icon name="search" />
+    </button>
     <button type="button" class="icon-btn desktop-only" (click)="onOpenNotes()" [title]="t('notes')">
       <app-reader-icon name="note" />
     </button>
@@ -38,6 +38,10 @@
       @if (overflowOpen) {
         <div class="overflow-backdrop" role="button" tabindex="0" (click)="overflowOpen = false" (keydown.enter)="overflowOpen = false"></div>
         <div class="overflow-dropdown" [style.background]="theme().bg" [style.color]="theme().fg">
+          <button type="button" class="overflow-item" (click)="onOpenSearch(); overflowOpen = false">
+            <app-reader-icon name="search" [size]="18" />
+            <span>{{ t('search') }}</span>
+          </button>
           <button type="button" class="overflow-item" (click)="onOpenNotes(); overflowOpen = false">
             <app-reader-icon name="note" [size]="18" />
             <span>{{ t('notes') }}</span>
@@ -49,6 +53,10 @@
           <button type="button" class="overflow-item" (click)="onShowHelp(); overflowOpen = false">
             <app-reader-icon name="help" [size]="18" />
             <span>{{ t('keyboardShortcuts') }}</span>
+          </button>
+          <button type="button" class="overflow-item" (click)="onShowControls(); overflowOpen = false">
+            <app-reader-icon name="settings" [size]="18" />
+            <span>{{ t('settings') }}</span>
           </button>
         </div>
       }
