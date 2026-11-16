@@ -61,7 +61,7 @@
         </div>
       }
     </div>
-    <button type="button" class="icon-btn" (click)="onShowControls()" [title]="t('settings')">
+    <button type="button" class="icon-btn desktop-only" (click)="onShowControls()" [title]="t('settings')">
       <app-reader-icon name="settings" />
     </button>
     <button type="button" class="icon-btn close-btn" (click)="onClose(); $event.stopPropagation()" [title]="t('closeReader')">

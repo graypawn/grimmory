@@ -5,6 +5,7 @@ import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import {MessageService} from '@openng/optimus-ui/api';
 import {ReaderLoaderService} from './core/loader.service';
 import {ReaderViewManagerService} from './core/view-manager.service';
+import {ReaderEventService} from './core/event.service';
 import {ReaderStateService} from './state/reader-state.service';
 import {ReaderStyleService} from './core/style.service';
 import {ReaderBookmarkService} from './features/bookmarks/bookmark.service';
@@ -86,6 +87,7 @@ export class EbookReaderComponent implements OnInit {
   private static readonly INITIAL_CHAPTER_RESTORE_RETRY_MS = 100;
   private static readonly INITIAL_CHAPTER_RESTORE_MAX_ATTEMPTS = 15;
   private readonly loaderService = inject(ReaderLoaderService);
+  private readonly readerEvents = inject(ReaderEventService);
   private readonly styleService = inject(ReaderStyleService);
   private readonly bookService = inject(BookService);
   private readonly bookFileService = inject(BookFileService);
@@ -320,6 +322,7 @@ export class EbookReaderComponent implements OnInit {
             break;
           case 'relocate':
             this.requestAutoFullscreen();
+            this.readerEvents.updateNextSectionButton(event.detail.section);
             if (this.handlePendingInitialChapterRestore(event.detail)) {
               break;
             }

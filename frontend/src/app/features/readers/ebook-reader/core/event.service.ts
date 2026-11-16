@@ -168,6 +168,35 @@ export class ReaderEventService {
     this.eventSubject.next(event);
   }
 
+  updateNextSectionButton(section: {current: number; total: number} | undefined): void {
+    const contents = this.viewCallbacks?.getContents() ?? [];
+
+    for (const {index, doc} of contents) {
+      doc.getElementById('grimmory-next-section')?.remove();
+
+      if (!section || section.current >= section.total - 1 || index !== section.current || !doc.body) {
+        continue;
+      }
+
+      const container = doc.createElement('div');
+      container.id = 'grimmory-next-section';
+      container.style.cssText = 'display:flex; justify-content:center; margin:3rem 0 2rem; padding:0 1rem;';
+
+      const button = doc.createElement('button');
+      button.type = 'button';
+      button.textContent = '다음화 보기';
+      button.style.cssText = 'min-width:13rem; padding:.9rem 1.5rem; border:1px solid currentColor; border-radius:.5rem; background:transparent; color:inherit; font:inherit; font-weight:600; letter-spacing:-.01em; cursor:pointer;';
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.viewCallbacks?.next();
+      });
+
+      container.appendChild(button);
+      doc.body.appendChild(container);
+    }
+  }
+
   private attachViewEventListeners(): void {
     if (!this.view) return;
 
@@ -308,6 +337,10 @@ export class ReaderEventService {
     });
 
     track(doc, 'click', ((event: MouseEvent) => {
+      if ((event.target as Element | null)?.closest('#grimmory-next-section')) {
+        return;
+      }
+
       // Ignore synthesized mouse events that follow touch events
       if (Date.now() - this.lastTouchTime < 500) {
         return;
@@ -458,7 +491,7 @@ export class ReaderEventService {
 
       if (touchDuration < this.LONG_HOLD_THRESHOLD_MS && Math.abs(deltaX) < 10 && deltaY < 10) {
         const target = event.target as Element | null;
-        if (target?.closest('a[href]')) return;
+        if (target?.closest('a[href], #grimmory-next-section')) return;
         const iframe = doc.defaultView?.frameElement as HTMLIFrameElement | null;
         if (!iframe) return;
 
