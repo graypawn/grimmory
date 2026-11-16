@@ -2,6 +2,7 @@ import {Component, inject, output} from '@angular/core';
 import {TranslocoDirective} from '@jsverse/transloco';
 import {ReaderHeaderService} from './header.service';
 import {ReaderIconComponent} from '../../shared/icon.component';
+import {ReaderEventService} from '../../core/event.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -13,6 +14,7 @@ import {Router} from '@angular/router';
 })
 export class ReaderHeaderComponent {
   private readonly headerService = inject(ReaderHeaderService);
+  readonly readerEvents = inject(ReaderEventService);
   private readonly router = inject(Router);
 
   readonly forceVisible = this.headerService.forceVisible;

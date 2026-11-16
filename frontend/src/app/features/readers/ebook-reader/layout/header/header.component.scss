@@ -144,3 +144,15 @@
     }
   }
 }
+
+@media (pointer: coarse) {
+  .reader-header {
+    transition: none;
+  }
+}
+
+@media (pointer: fine) {
+  .touch-selection-toggle {
+    display: none;
+  }
+}

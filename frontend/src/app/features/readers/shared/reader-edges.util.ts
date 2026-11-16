@@ -2,8 +2,8 @@ import {afterNextRender, DestroyRef, effect, inject} from '@angular/core';
 
 export const isTouchScreen = () => matchMedia('(pointer: coarse)').matches;
 
-export function setupReaderEdges(stripColor: () => string): () => void {
-  let fullscreenPending = isTouchScreen();
+export function setupReaderEdges(stripColor: () => string, autoFullscreen = true): () => void {
+  let fullscreenPending = autoFullscreen && isTouchScreen();
   let scrollTimer: ReturnType<typeof setTimeout> | undefined;
 
   const requestFullscreen = () => {

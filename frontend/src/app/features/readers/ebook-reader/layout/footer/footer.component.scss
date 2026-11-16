@@ -435,3 +435,9 @@
     }
   }
 }
+
+@media (pointer: coarse) {
+  .reader-navbar {
+    transition: none;
+  }
+}

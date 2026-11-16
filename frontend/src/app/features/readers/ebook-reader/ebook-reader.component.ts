@@ -134,7 +134,7 @@ export class EbookReaderComponent implements OnInit {
   protected readonly progressData = signal<RelocateProgressData | null>(null);
 
   readonly readerState = this.stateService.state;
-  private readonly requestAutoFullscreen = setupReaderEdges(() => this.readerState().theme.bg ?? '');
+  private readonly requestAutoFullscreen = setupReaderEdges(() => this.readerState().theme.bg ?? '', false);
   readonly selectionState = this.selectionService.state;
   readonly noteDialogState = this.noteService.dialogState;
   readonly isCurrentCfiBookmarked = this.headerService.isCurrentCfiBookmarked;

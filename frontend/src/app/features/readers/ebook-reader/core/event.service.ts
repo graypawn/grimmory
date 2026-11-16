@@ -1,4 +1,4 @@
-import {inject, Service} from '@angular/core';
+import {inject, Service, signal} from '@angular/core';
 import {Subject} from 'rxjs';
 import {ReaderAnnotationService} from '../features/annotations/annotation-renderer.service';
 
@@ -92,6 +92,25 @@ export class ReaderEventService {
   private readonly RIGHT_ZONE_PERCENT = 0.7;
   private readonly SWIPE_THRESHOLD_PX = 50;
 
+  readonly touchSelectionEnabled = signal(false);
+
+  private isTouchDevice(): boolean {
+    return navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
+  }
+
+  private selectionAllowed(): boolean {
+    return !this.isTouchDevice() || this.touchSelectionEnabled();
+  }
+
+  toggleTouchSelection(): void {
+    this.touchSelectionEnabled.update(enabled => !enabled);
+    for (const {doc} of this.viewCallbacks?.getContents() ?? []) {
+      this.injectMobileSelectionStyles(doc);
+      if (!this.selectionAllowed()) doc.defaultView?.getSelection()?.removeAllRanges();
+    }
+    this.eventSubject.next({type: 'text-deselected'});
+  }
+
   private view: EventServiceView | null = null;
   private viewCallbacks: ViewCallbacks | null = null;
   private isNavigating = false;
@@ -136,6 +155,7 @@ export class ReaderEventService {
       clearTimeout(this.selectionChangeTimeout);
       this.selectionChangeTimeout = null;
     }
+    this.touchSelectionEnabled.set(false);
     this.view = null;
     this.viewCallbacks = null;
     this.isNavigating = false;
@@ -195,6 +215,7 @@ export class ReaderEventService {
     });
 
     this.view.addEventListener('show-annotation', (event: Event) => {
+      if (!this.selectionAllowed()) return;
       const e = event as CustomEvent<unknown>;
       this.eventSubject.next({type: 'show-annotation', detail: e.detail});
     });
@@ -322,6 +343,10 @@ export class ReaderEventService {
       this.handleTouchEnd(event, doc);
     }) as EventListener, {passive: false});
 
+    track(doc, 'contextmenu', event => {
+      if (this.isTouchDevice()) event.preventDefault();
+    });
+
     track(doc, 'selectionchange', () => {
       this.handleSelectionChange(doc);
     });
@@ -353,15 +378,14 @@ export class ReaderEventService {
 
   private injectMobileSelectionStyles(doc: Document): void {
     const styleId = 'grimmory-mobile-selection-styles';
-    if (doc.getElementById(styleId)) return;
-
-    const style = doc.createElement('style');
+    if (!this.isTouchDevice()) return;
+    const style = doc.getElementById(styleId) ?? doc.createElement('style');
     style.id = styleId;
     style.textContent = `
       * {
         -webkit-touch-callout: none !important;
-        -webkit-user-select: text !important;
-        user-select: text !important;
+        -webkit-user-select: ${this.selectionAllowed() ? 'text' : 'none'} !important;
+        user-select: ${this.selectionAllowed() ? 'text' : 'none'} !important;
       }
     `;
     doc.head.appendChild(style);
@@ -376,10 +400,6 @@ export class ReaderEventService {
     this.touchStartY = touch.clientY;
     this.touchStartTime = Date.now();
     this.isTextSelectionInProgress = false;
-
-    this.longHoldTimeout = setTimeout(() => {
-      this.longHoldTimeout = null;
-    }, this.LONG_HOLD_THRESHOLD_MS);
   }
 
   private handleTouchMove(event: TouchEvent, doc: Document): void {
@@ -462,6 +482,7 @@ export class ReaderEventService {
 
   private handleSelectionEnd(doc: Document): void {
     setTimeout(() => {
+      if (!this.selectionAllowed()) return;
       const selection = doc.defaultView?.getSelection();
       if (!selection || selection.isCollapsed || selection.rangeCount === 0) {
         return;
@@ -558,6 +579,11 @@ export class ReaderEventService {
   private handleIframeClickMessage(data: IframeClickMessage): void {
     if (!this.view) return;
 
+    if (this.isTouchDevice()) {
+      this.processIframeClick(data, true);
+      return;
+    }
+
     const now = Date.now();
     const timeSinceLastClick = now - this.lastClickTime;
 
@@ -593,8 +619,8 @@ export class ReaderEventService {
     }, this.DOUBLE_CLICK_INTERVAL_MS);
   }
 
-  private processIframeClick(data: IframeClickMessage): void {
-    if (!this.longHoldTimeout) {
+  private processIframeClick(data: IframeClickMessage, isTouchTap = false): void {
+    if (!isTouchTap && !this.longHoldTimeout) {
       return;
     }
 

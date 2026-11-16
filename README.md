@@ -1,119 +1,57 @@
-<div align="center">
+# Grimmory Android Reader Fork
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-with-text.svg">
-  <img src="assets/logo-with-text-light.svg" alt="Grimmory" height="80" />
-</picture>
+이 저장소는 [Grimmory 원본 저장소](https://github.com/grimmory-tools/grimmory)를 기반으로 한 포크입니다.
+Grimmory의 기본 기능과 원본의 저작권·라이선스 고지를 존중하며, Android 독서 화면의 입력 동작과 포크 배포에 필요한 변경을 유지합니다.
 
-**Grimmory is a self-hosted digital library for people who take their reading seriously.**
+## 라이선스
 
-[![Release](https://img.shields.io/github/v/release/grimmory-tools/grimmory?color=818CF8&logo=github)](https://github.com/grimmory-tools/grimmory/releases)
-[![License](https://img.shields.io/github/license/grimmory-tools/grimmory?color=fab005)](LICENSE)
-[![Crowdin](https://badges.crowdin.net/grimmory/localized.svg)](https://crowdin.com/project/grimmory)
-[![Docker Pulls](https://img.shields.io/docker/pulls/grimmory/grimmory?color=2496ED&logo=docker&logoColor=white)](https://hub.docker.com/r/grimmory/grimmory)
-[![Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white)](https://discord.gg/9YJ7HB4n8T)
+이 프로젝트는 원본 프로젝트와 동일하게 [GNU Affero General Public License v3.0](LICENSE)을 따릅니다.
 
-[Documentation](https://grimmory.org/docs) · [Quick Start](#quick-start) · [Translations](https://crowdin.com/project/grimmory) · [Discord](https://discord.gg/9YJ7HB4n8T) · [Releases](https://github.com/grimmory-tools/grimmory/releases)
+포크에서 수정한 소스도 같은 라이선스로 배포합니다. 이 저장소에서 제공하는 Docker 이미지는 이 저장소의 소스와 함께 제공되며, 네트워크로 서비스를 제공하는 경우에도 AGPL-3.0의 소스 제공 의무를 준수해야 합니다.
 
-<!-- ![Grimmory Demo](assets/demo.gif) -->
+원본의 저작권 표시, `LICENSE`, `NOTICE` 및 기존 고지를 삭제하지 않았습니다. 이 포크의 변경사항은 이 저장소의 커밋과 소스에서 확인할 수 있습니다.
 
-</div>
+## 이 포크의 변경사항
 
----
+### Android EPUB 독서 화면
 
-## Features
+- Grimmory의 상단·하단 독서 바: 화면 터치 시 지연 없이 표시되거나 숨겨집니다.
+- Grimmory의 상단·하단 독서 바: 애니메이션 삭제 (Android 환경)
+- Grimmory의 상단 독서 바에 Grimmory 컨텍스트 메뉴 활성화 버튼을 추가했습니다.
+- 기본 상태에서는 Grimmory 컨텍스트 메뉴, 브라우저 컨텍스트 메뉴, 구글 검색 메뉴를 차단합니다.
 
-| Feature | Description |
-| :--- | :--- |
-| **Smart Shelves** | Custom and dynamic shelves with rule-based filtering, tagging, and full-text search |
-| **Metadata Lookup** | Covers, descriptions, reviews, and ratings pulled from Google Books, Open Library, and Amazon, all editable |
-| **Built-in Reader** | Read PDFs, EPUBs, and comics in the browser with annotations, highlights, and reading progress tracking |
-| **Device Sync** | Connect a Kobo, use any OPDS-compatible app, or sync progress with KOReader |
-| **Multi-User** | Separate shelves, progress, and preferences per user with local or OIDC authentication |
-| **BookDrop** | Drop files into a watched folder and Grimmory detects, enriches, and queues them for import automatically |
-| **One-Click Sharing** | Send any book to a Kindle, an email address, or another user directly from the interface |
+### 포크 버전 표시
 
-### Supported Formats
+좌측 패널에서 계정명을 누르면 열리는 사용자 메뉴의 버전 표시에는 다음 형식의 포크 버전명이 표시됩니다.
 
-| Category | Formats |
-| :--- | :--- |
-| eBooks | EPUB, MOBI, AZW, AZW3, FB2 |
-| Documents | PDF |
-| Comics | CBZ, CBR, CB7 |
-| Audiobooks | M4B, M4A, MP3, OPUS |
-
----
-
-## Quick Start
-
-> [!TIP]
-> For OIDC setup, advanced configuration, or upgrade guides, see the [full documentation](https://grimmory.org/docs/getting-started).
-
-Requirements: [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/).
-
-<details>
-<summary><strong>Image Repositories</strong></summary>
-
-| Registry | Image |
-| --- | --- |
-| Docker Hub | `grimmory/grimmory` |
-| GitHub Container Registry | `ghcr.io/grimmory-tools/grimmory` |
-
-</details>
-
-### Step 1: Environment Configuration
-
-Create a `.env` file:
-
-```ini
-# Application
-APP_USER_ID=1000
-APP_GROUP_ID=1000
-TZ=Etc/UTC
-
-# Database
-DATABASE_URL=jdbc:mariadb://mariadb:3306/grimmory
-DB_USER=grimmory
-DB_PASSWORD=ChangeMe_Grimmory_2025!
-
-# Optional: enable API docs + export OpenAPI JSON (defaults to false)
-API_DOCS_ENABLED=false
-
-# Storage: LOCAL (default) or NETWORK (disables file operations; see Network Storage section)
-DISK_TYPE=LOCAL
-
-# MariaDB
-DB_USER_ID=1000
-DB_GROUP_ID=1000
-MYSQL_ROOT_PASSWORD=ChangeMe_MariaDBRoot_2025!
-MYSQL_DATABASE=grimmory
+```text
+graypawn-android-reader-<짧은 커밋 SHA>
 ```
 
-### Step 2: Docker Compose
+### Docker 이미지
 
-Stable images are published from semantic-release tags on `main` as `vX.Y.Z` plus `latest`. Nightly images are built from `develop` and tagged `nightly`.
+GitHub Actions가 `android-reader` 브랜치의 변경을 검사한 뒤 amd64·arm64 이미지를 빌드하여 다음 GHCR 이미지로 게시합니다.
 
-Create a `docker-compose.yml` or copy and adapt [`deploy/compose/docker-compose.yml`](deploy/compose/docker-compose.yml):
+```text
+ghcr.io/graypawn/grimmory:latest
+```
+
+## Docker로 실행
+
+Docker와 Docker Compose가 필요합니다.
 
 ```yaml
 services:
   grimmory:
-    image: grimmory/grimmory:latest
-    # Convenience tag:
-    # image: grimmory/grimmory:<release-version>
-    # Alternative: ghcr.io/grimmory-tools/grimmory:<release-version>
-    # To build from source instead: comment out 'image' and uncomment below
-    # build: .
+    image: ghcr.io/graypawn/grimmory:latest
     container_name: grimmory
     environment:
-      - USER_ID=${APP_USER_ID}
-      - GROUP_ID=${APP_GROUP_ID}
-      - TZ=${TZ}
-      - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_USERNAME=${DB_USER}
-      - DATABASE_PASSWORD=${DB_PASSWORD}
-      - API_DOCS_ENABLED=${API_DOCS_ENABLED}
-      - DISK_TYPE=${DISK_TYPE}
+      - USER_ID=1000
+      - GROUP_ID=1000
+      - TZ=Etc/UTC
+      - DATABASE_URL=jdbc:mariadb://mariadb:3306/grimmory
+      - DATABASE_USERNAME=grimmory
+      - DATABASE_PASSWORD=your_secure_password
     depends_on:
       mariadb:
         condition: service_healthy
@@ -123,142 +61,41 @@ services:
       - ./data:/app/data
       - ./books:/books
       - ./bookdrop:/bookdrop
-    healthcheck:
-      test: wget -q -O - http://localhost:6060/api/v1/healthcheck
-      interval: 60s
-      retries: 5
-      start_period: 60s
-      timeout: 10s
     restart: unless-stopped
 
   mariadb:
-    image: lscr.io/linuxserver/mariadb:11.4.5
+    image: lscr.io/linuxserver/mariadb:11.4.8
     environment:
-      - PUID=${DB_USER_ID}
-      - PGID=${DB_GROUP_ID}
-      - TZ=${TZ}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - MYSQL_ROOT_PASSWORD=super_secure_password
+      - MYSQL_DATABASE=grimmory
+      - MYSQL_USER=grimmory
+      - MYSQL_PASSWORD=your_secure_password
     volumes:
-      - ./mariadb/config:/config
+      - ./config:/config
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
 ```
 
-### Step 3: Launch
+이미지를 갱신할 때는 Grimmory 서비스의 실제 이름에 맞춰 실행합니다.
 
-```bash
-docker compose up -d
+```sh
+docker compose pull grimmory
+docker compose up -d --no-deps grimmory
 ```
 
-Open http://localhost:6060, create your admin account, and start building your library. (All libraries must be created within directories mounted on the host, e.g. the `/books/` directory in the sample `docker-compose.yml` above.)
+GHCR 패키지가 비공개이면 서버에서 `read:packages` 권한이 있는 GitHub classic PAT로 로그인해야 합니다.
 
-#### Optional: Capture Heap Dumps for OOM Debugging
-
-Heap dumps are disabled by default. To enable them temporarily, add the following environment variable to the `grimmory` service:
-
-```yaml
-services:
-  grimmory:
-    environment:
-      - JDK_JAVA_OPTIONS=-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/app/data
+```sh
+echo "$CR_PAT" | docker login ghcr.io -u graypawn --password-stdin
 ```
 
-The JVM creates a PID-specific `.hprof` file in the mounted `/app/data` directory. Remove the option after collecting the diagnostic data because heap dumps can be large and contain sensitive application data.
+PWA 또는 브라우저에 이전 프런트엔드가 캐시되어 있으면 앱을 완전히 닫고 다시 연 뒤 변경사항을 확인합니다.
 
-Additional deployment examples:
+## 원본 프로젝트
 
-- Docker Compose: [`deploy/compose/docker-compose.yml`](deploy/compose/docker-compose.yml)
-- Helm: [`deploy/helm/grimmory/Chart.yaml`](deploy/helm/grimmory/Chart.yaml)
-- Podman Quadlet: [`deploy/podman/quadlet/README.md`](deploy/podman/quadlet/README.md)
-
----
-
-## Developer Surfaces
-
-
-Contributor workflow, PR policy, and release semantics live in [CONTRIBUTING.md](CONTRIBUTING.md).
-Non-English translation contributions are managed through [Crowdin](https://crowdin.com/project/grimmory).
-
-General purpose development guidelines live in [DEVELOPMENT.md](DEVELOPMENT.md). Component-specific implementation guidance lives in:
-
-- [`backend/DEVELOPMENT.md`](backend/DEVELOPMENT.md)
-- [`frontend/DEVELOPMENT.md`](frontend/DEVELOPMENT.md)
-
-The root [`Justfile`](Justfile) is the primary local command surface and mirrors the folder-local `backend/Justfile` and `frontend/Justfile` entrypoints.
-
-```bash
-just               # Show root + api + ui recipes
-just test          # Run backend and frontend tests
-just api test      # Run backend tests only
-just ui dev        # Start the frontend dev server
-```
-
----
-
-## API Reference Docs
-
-When enabled via `API_DOCS_ENABLED`, API reference documentation is available as both an `openapi.json` and as publicly accessible docs. The endpoints are:
-- API reference docs are available at `http://localhost:6060/api/docs`
-- OpenAPI JSON is available at `http://localhost:6060/api/openapi.json`
-
----
-
-## BookDrop
-
-Drop book files into a watched folder. Grimmory picks them up, pulls metadata, and queues them for your review.
-
-```mermaid
-graph LR
-    A[Drop Files] --> B[Auto-Detect]
-    B --> C[Extract Metadata]
-    C --> D[Review and Import]
-```
-
-| Step | What Happens |
-| --- | --- |
-| 1. Watch | Grimmory monitors the BookDrop folder continuously |
-| 2. Detect | New files are picked up and parsed automatically |
-| 3. Enrich | Metadata is fetched from Google Books and Open Library |
-| 4. Import | You review, adjust if needed, and add to your library |
-
-Mount the volume in `docker-compose.yml`:
-
-```yaml
-volumes:
-  - ./bookdrop:/bookdrop
-```
-
----
-
-## Network Storage
-
-Set `DISK_TYPE=NETWORK` in your `.env` to run Grimmory against a network-mounted file system (NFS, SMB, etc.).
-In this mode, direct file operations (delete, move, rename from the UI) are disabled to avoid destructive changes on shared mounts.
-All other features — reading, metadata, sync — remain fully functional.
-
----
-
-## Community and Support
-
-| Channel |                                                                                                         |
-| :--- |:--------------------------------------------------------------------------------------------------------|
-| Report a bug | [Open an issue](https://github.com/grimmory-tools/grimmory/issues/new?template=bug-report.yml)          |
-| Request a feature | [Open a Discussion](https://github.com/orgs/grimmory-tools/discussions/new?category=feature-requests-ideas) |
-| Contribute | [Contributing Guide](CONTRIBUTING.md)                                                                   |
-| Join the discussion | [Discord Server](https://discord.gg/9YJ7HB4n8T)                                                         |
-
-> [!WARNING]
-> Before opening a pull request, open an issue first and get maintainer approval. Pull requests without a linked issue, without screenshots or video proof, or without pasted test output will be closed. All code must follow the project [backend](CONTRIBUTING.md#backend-conventions) and [frontend](CONTRIBUTING.md#frontend-conventions) conventions. AI-assisted contributions are welcome, but you must run, test, and understand every line you submit. See the [Contributing Guide](CONTRIBUTING.md) for full details.
-
---- 
-
-## License
-
-Distributed under the terms of the [AGPL-3.0 License](LICENSE).
+- 원본 저장소: <https://github.com/grimmory-tools/grimmory>
+- 원본 문서: <https://grimmory.org/docs>
+- 이 포크의 Android 독서 변경 문서: [`docs/fork/android-reader.md`](docs/fork/android-reader.md)
+- 이 포크의 Docker 배포 문서: [`docs/fork/docker-publish.md`](docs/fork/docker-publish.md)

@@ -195,6 +195,50 @@ describe('ReaderEventService', () => {
     Reflect.deleteProperty(navigator, 'maxTouchPoints');
   });
 
+  it('toggles chrome immediately on touch edge taps when tap-to-turn is disabled', () => {
+    Object.defineProperty(navigator, 'maxTouchPoints', {value: 1, configurable: true});
+    tapToTurnEnabled = false;
+    for (const clientX of [40, 580]) {
+      privateService.handleIframeClickMessage({
+        type: 'iframe-click', clientX, clientY: 100,
+        iframeLeft: 0, iframeWidth: 600, eventClientX: clientX,
+      });
+    }
+    expect(prev).not.toHaveBeenCalled();
+    expect(next).not.toHaveBeenCalled();
+    expect(emittedEvents.filter(event => event.type === 'middle-single-tap')).toHaveLength(2);
+  });
+
+  it('handles every rapid touch tap without a long-press timer', () => {
+    Object.defineProperty(navigator, 'maxTouchPoints', {value: 1, configurable: true});
+    tapToTurnEnabled = false;
+
+    for (let index = 0; index < 5; index++) {
+      privateService.handleIframeClickMessage({
+        type: 'iframe-click', clientX: 300, clientY: 100,
+        iframeLeft: 0, iframeWidth: 600, eventClientX: 280,
+      });
+    }
+
+    expect(emittedEvents.filter(event => event.type === 'middle-single-tap')).toHaveLength(5);
+  });
+
+  it('requires session opt-in for touch selection and suppresses the native context menu', () => {
+    Object.defineProperty(navigator, 'maxTouchPoints', {value: 1, configurable: true});
+    getContents.mockReturnValue([{index: 0, doc}]);
+    view.dispatchEvent(new CustomEvent('load', {detail: {doc}}));
+    const style = () => doc.getElementById('grimmory-mobile-selection-styles')?.textContent;
+    expect(style()).toContain('user-select: none');
+    const menu = new Event('contextmenu', {cancelable: true});
+    doc.dispatchEvent(menu);
+    expect(menu.defaultPrevented).toBe(true);
+    service.toggleTouchSelection();
+    expect(style()).toContain('user-select: text');
+    expect(service.touchSelectionEnabled()).toBe(true);
+    service.destroy();
+    expect(service.touchSelectionEnabled()).toBe(false);
+  });
+
   it('hydrates annotations on load and forwards load events', () => {
     getAllAnnotations.mockReturnValue([{value: 'cfi-1'}, {value: 'cfi-2'}]);
 

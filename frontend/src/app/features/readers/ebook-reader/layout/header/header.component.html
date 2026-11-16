@@ -5,6 +5,14 @@
     <button type="button" class="icon-btn" (click)="onShowChapters()" [title]="t('chapters')">
       <app-reader-icon name="menu" [size]="20" />
     </button>
+    <button type="button" class="icon-btn touch-selection-toggle"
+      (click)="readerEvents.toggleTouchSelection()"
+      [attr.aria-pressed]="readerEvents.touchSelectionEnabled()"
+      [class.active]="readerEvents.touchSelectionEnabled()"
+      [title]="readerEvents.touchSelectionEnabled() ? '글자 선택 끄기 / Disable text selection' : '글자 선택 켜기 / Enable text selection'"
+      aria-label="글자 선택 / Text selection">
+      <app-reader-icon name="note" />
+    </button>
     <button type="button" class="icon-btn" (click)="onCreateBookmark()" [title]="isCurrentCfiBookmarked() ? t('removeBookmark') : t('addBookmark')" [class.active]="isCurrentCfiBookmarked()">
       <app-reader-icon name="bookmark" />
     </button>
