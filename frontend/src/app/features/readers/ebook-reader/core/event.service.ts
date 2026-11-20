@@ -78,6 +78,7 @@ export type ViewEvent =
 interface ViewCallbacks {
   prev: () => void;
   next: () => void;
+  goToSection?: (index: number) => void;
   getCFI: (index: number, range: Range) => string | null;
   getContents: () => { index: number; doc: Document }[] | null;
   isTapToTurnEnabled?: () => boolean;
@@ -180,16 +181,16 @@ export class ReaderEventService {
 
       const container = doc.createElement('div');
       container.id = 'grimmory-next-section';
-      container.style.cssText = 'display:flex; justify-content:center; margin:3rem 0 2rem; padding:0 1rem;';
+      container.style.cssText = 'display:block; margin:0; padding:0;';
 
       const button = doc.createElement('button');
       button.type = 'button';
       button.textContent = '다음화 보기';
-      button.style.cssText = 'min-width:13rem; padding:.9rem 1.5rem; border:1px solid currentColor; border-radius:.5rem; background:transparent; color:inherit; font:inherit; font-weight:600; letter-spacing:-.01em; cursor:pointer;';
+      button.style.cssText = 'display:block; width:calc(100% - 60px); box-sizing:border-box; margin:10px 30px 100px; padding:10px 20px; border:1px solid rgba(155,155,155,.2); border-radius:10px; background:rgba(155,155,155,.1); color:inherit; font:inherit; font-weight:600; letter-spacing:-.01em; text-align:center; cursor:pointer;';
       button.addEventListener('click', event => {
         event.preventDefault();
         event.stopPropagation();
-        this.viewCallbacks?.next();
+        this.viewCallbacks?.goToSection?.(section.current + 1);
       });
 
       container.appendChild(button);

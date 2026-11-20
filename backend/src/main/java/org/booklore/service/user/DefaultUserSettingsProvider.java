@@ -88,7 +88,7 @@ public class DefaultUserSettingsProvider {
                 .lineHeight(1.5f)
                 .maxBlockSize(1440)
                 .maxColumnCount(2)
-                .maxInlineSize(720)
+                .maxInlineSize(1080)
                 .theme("gray")
                 .flow("paginated")
                 .tapToTurnPage(true)

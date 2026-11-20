@@ -125,6 +125,9 @@ export class ReaderViewManagerService {
     this.eventService.initialize(this.view, {
       prev: () => this.prev(),
       next: () => this.next(),
+      goToSection: (index: number) => {
+        this.goToSection(index).pipe(catchError(() => of(undefined))).subscribe();
+      },
       getCFI: (index: number, range: Range) => this.view?.getCFI(index, range) ?? null,
       getContents: () => this.view?.renderer?.getContents() ?? null,
       isTapToTurnEnabled: () => this.readerStateService.state().tapToTurnPage

@@ -239,6 +239,24 @@ describe('ReaderEventService', () => {
     expect(service.touchSelectionEnabled()).toBe(false);
   });
 
+  it('opens the next section directly from the next-section button', () => {
+    const goToSection = vi.fn();
+    getContents.mockReturnValue([{index: 2, doc}]);
+    service.initialize(view, {prev, next, goToSection, getCFI, getContents, isTapToTurnEnabled});
+
+    service.updateNextSectionButton({current: 2, total: 5});
+
+    const button = doc.querySelector<HTMLButtonElement>('#grimmory-next-section button');
+    expect(button).not.toBeNull();
+    expect(button?.style.margin).toBe('10px 30px 100px');
+    expect(button?.style.background).toBe('rgba(155, 155, 155, 0.1)');
+    expect(button?.style.borderRadius).toBe('10px');
+    button?.click();
+
+    expect(goToSection).toHaveBeenCalledWith(3);
+    expect(next).not.toHaveBeenCalled();
+  });
+
   it('hydrates annotations on load and forwards load events', () => {
     getAllAnnotations.mockReturnValue([{value: 'cfi-1'}, {value: 'cfi-2'}]);
 

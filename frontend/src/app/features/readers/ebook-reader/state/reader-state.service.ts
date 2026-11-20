@@ -53,7 +53,7 @@ export class ReaderStateService {
       bg: themes[0].dark.bg,
       link: themes[0].dark.link,
     },
-    maxInlineSize: 720,
+    maxInlineSize: 1080,
     maxBlockSize: 1440,
     fontFamily: null,
     isDark: true,

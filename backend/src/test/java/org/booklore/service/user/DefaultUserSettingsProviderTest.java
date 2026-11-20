@@ -19,11 +19,12 @@ class DefaultUserSettingsProviderTest {
     }
 
     @Test
-    void ebookReaderDefaults_shouldEnableTapToTurnPage() {
+    void ebookReaderDefaults_shouldUseWideLayoutAndEnableTapToTurnPage() {
         Object value = provider.getDefaultValue(UserSettingKey.EBOOK_READER_SETTING);
 
         BookLoreUser.UserSettings.EbookReaderSetting setting =
                 assertInstanceOf(BookLoreUser.UserSettings.EbookReaderSetting.class, value);
+        assertEquals(1080, setting.getMaxInlineSize());
         assertEquals(Boolean.TRUE, setting.getTapToTurnPage());
     }
 }
