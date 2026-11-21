@@ -248,7 +248,9 @@ describe('ReaderEventService', () => {
 
     const button = doc.querySelector<HTMLButtonElement>('#grimmory-next-section button');
     expect(button).not.toBeNull();
-    expect(button?.style.margin).toBe('10px 30px 100px');
+    expect(button?.style.width).toBe('calc(100% - 30px)');
+    expect(button?.style.margin).toBe('10px 15px 100px');
+    expect(button?.style.padding).toBe('15px 20px');
     expect(button?.style.background).toBe('rgba(155, 155, 155, 0.1)');
     expect(button?.style.borderRadius).toBe('10px');
     button?.click();
